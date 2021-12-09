@@ -1,10 +1,6 @@
 const { Client } = require('@notionhq/client');
 fs = require('fs');
-
-
-
-//const notion = new Client({ auth: process.env.NOTION_KEY })
-
+viz = require("./visualize.js");
 
 // Parse out credentials and database ID
 const NOTION_KEY = fs.readFileSync("notion-token.txt", "UTF8");
@@ -39,17 +35,17 @@ function formatResult(result){
     results = results.map(function(x){
         res = {}
         res["created_time"] = x.Date.created_time
-        res["Category"] = x.Category.multi_select.map(x => x.name)
+        res["Category"] = x.Category.multi_select[0].name//.map(x => x.name)[0]
         res["Cost"] = x.Cost.number
         res["Name"] = x.Name.title.map(x => x.plain_text)[0]
         return res
     })
-    console.log(results)
+    return results
 }
 
 // getData(NOTION_DB)
 
-let ss = getThisWeek("12/8/2021")
+let ss = getThisWeek()
 lsun = ss[0].toISOString()
 nsun = ss[1].toISOString()
 
@@ -59,19 +55,24 @@ async function runQuery(){
     {"and": [{
                 property: "Date",
                 date: {
-                after: lsun,
+                    on_or_after: lsun,
                 }
             },
             {
                 property: "Date",
                 date: {
-                before: nsun,
+                    before: nsun,
                 }
             }]
     }
     
     response = await getData(NOTION_DB, queryFilter)
-    formatResult(response)
+    return formatResult(response)
 }
 
-runQuery()
+async function runViz(){
+    data = await runQuery()
+    viz.drawVisualizations(data)
+}
+
+runViz()

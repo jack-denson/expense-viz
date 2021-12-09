@@ -1,0 +1,15 @@
+{
+    "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+    "data": null,
+    "transform": [
+        {
+          "aggregate": [{"op": "sum", "as": "Cost", "field": "Cost"}],
+          "groupby": ["Category"]
+        }
+      ],
+    "mark": "arc",
+    "encoding": {
+      "theta": {"field": "Cost", "type": "quantitative"},
+      "color": {"field": "Category", "type": "nominal"}
+    }
+  }
