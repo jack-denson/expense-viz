@@ -17,15 +17,19 @@ function drawVisualizations(data, specificSpecs=null) {
 
 function render(data, specFile){
     let fileSpec = JSON.parse(fs.readFileSync("viz-specs/" + specFile + ".json", "UTF8"))
-    fileSpec["data"] = data
+    fileSpec["data"] = {"values": data}
+    console.log(JSON.stringify(fileSpec))
     let spec = vl.compile(fileSpec).spec
 
     var view = new vega.View(vega.parse(spec), {
         loader: vega.loader(),
         logLevel: vega.Warn,
-        renderer: 'none'
-    }).initialize().finalize();
+        renderer: 'none',
+        hover: true
+    }).initialize()
 
+    view.hover();
+    view.finalize();
     // generate a static SVG image
     view.toSVG(1)
     .then(function(svg) {

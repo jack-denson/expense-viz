@@ -1,15 +1,33 @@
 {
     "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
     "data": null,
+    "params": [
+        {
+        "name": "highlight",
+        "select": {"type": "point", "on": "mouseover"}
+        }
+    ],
     "transform": [
         {
           "aggregate": [{"op": "sum", "as": "Cost", "field": "Cost"}],
           "groupby": ["Category"]
         }
       ],
-    "mark": "arc",
+    "mark": {"type": "arc",
+             "radius2": 40},
     "encoding": {
       "theta": {"field": "Cost", "type": "quantitative"},
-      "color": {"field": "Category", "type": "nominal"}
+      "color": {"field": "Category", "type": "nominal"},
+      "tooltip": {"field": "Category", "type": "nominal"},
+      "fillOpacity": {
+        "condition": [
+          {
+            "param": "highlight",
+            "empty": false,
+            "value": 0.8
+          }
+        ],
+        "value": 1
+      }
     }
   }
