@@ -1,4 +1,5 @@
-{
+{ "preprocessor": null,
+  "schema": {
     "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
     "data": null,
     "params": [
@@ -31,3 +32,4 @@
       }
     }
   }
+}
