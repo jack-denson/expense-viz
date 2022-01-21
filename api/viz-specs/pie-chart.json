@@ -1,7 +1,7 @@
-{ "preprocessor": null,
+{ "preprocessor": "thisWeek",
   "schema": {
     "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
-    "data": null,
+    "data": {},
     "params": [
         {
         "name": "highlight",
