@@ -1,14 +1,17 @@
 const { Client } = require('@notionhq/client');
-fs = require('fs');
-viz = require("./visualize.js");
+const fs         = require('fs');
+const viz        = require("./visualizeStatic.js");
+const express    = require('express');
+
 
 // Parse out credentials and database ID
-const NOTION_KEY = fs.readFileSync("notion-token.txt", "UTF8");
-const notionPages = JSON.parse(fs.readFileSync("notion-pages.json", "UTF8"));
+const NOTION_KEY = fs.readFileSync("api/notion-token.txt", "UTF8");
+const notionPages = JSON.parse(fs.readFileSync("api/notion-pages.json", "UTF8"));
 const NOTION_DB = notionPages.expenseDB
 
 // Init Notion client
 const notion = new Client({auth: NOTION_KEY});
+const app = express();
 
 async function getData(databaseId, ftr){
     const response = await notion.databases.query({
@@ -43,8 +46,6 @@ function formatResult(result){
     return results
 }
 
-// getData(NOTION_DB)
-
 let ss = getThisWeek()
 lsun = ss[0].toISOString()
 nsun = ss[1].toISOString()
@@ -75,4 +76,14 @@ async function runViz(){
     viz.drawVisualizations(data)
 }
 
-runViz()
+
+app.get('/', (req, res) => {
+    res.json({
+        abc: 'defg'
+    });
+});
+
+const port = process.env.PORT || 4000;
+app.listen(port, () => {
+    console.log(`listening on ${port}`);
+});

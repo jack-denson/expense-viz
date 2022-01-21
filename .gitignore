@@ -1,4 +1,4 @@
-notion-token.txt
-notion-pages.json
+api/notion-token.txt
+api/notion-pages.json
 node_modules/
 output/
