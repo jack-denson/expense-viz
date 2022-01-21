@@ -10,10 +10,13 @@
         <v-sheet
           rounded="lg"
           min-height="100"
-          outlined
           min-width="100%"
-          :id="'vl'+$props.idNum"
+          outlined
+          style="position: relative"
         >
+              <div
+                :id="'vl'+$props.idNum"
+                class="embeddedViz"></div>
         </v-sheet>
       </v-col>
       <v-spacer v-if="left" />
@@ -39,7 +42,8 @@ export default {
       let spec = this.$props.spec
       const preprocessor = preprocess[this.$props.preprocessor]
       spec.data.values = preprocessor(this.$props.data)
-      await embed('#vl'+this.$props.idNum, spec, {actions: true});
+      await embed('#vl'+this.$props.idNum, spec, {actions: false});
+      console.log(JSON.stringify(preprocess['weekTotals'](this.$props.data)))
     }
   },
 
@@ -51,5 +55,9 @@ export default {
 </script>
 
 <style>
-
+.embeddedViz{
+  position: absolute;
+	top: 50%; left: 50%;
+	transform: translate(-50%, 0%);
+}
 </style>
