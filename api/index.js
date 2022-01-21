@@ -1,15 +1,18 @@
 const express    = require('express');
 const {runQuery} = require('./notion-data')
+const cors = require('cors');
 
 const app = express();
+
 
 app.get('/', (req, res) => {
     res.json({
         abc: 'defg'
     });
 });
+const cors_policy = cors({origin: 'http://localhost:8080' })
 
-app.get('/specs', (req, res) => {
+app.get('/specs', cors_policy, (req, res) => {
   const specs = fs.readdirSync("viz-specs")
   let specList = []
   for(let spec of specs){
@@ -18,11 +21,11 @@ app.get('/specs', (req, res) => {
 
   res.json(specList)
 })
-
-app.get('/data', async (req, res) => {
+app.get('/data', cors_policy , async (req, res) => {
   const data = await runQuery()
-  res.json(data)
+  res.send(data)
 })
+
 
 const port = process.env.PORT || 4000;
 app.listen(port, () => {

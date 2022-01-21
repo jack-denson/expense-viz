@@ -50,7 +50,6 @@ function binWeeks(flat) {
       binned[lsun] = [expense]
     }
   }
-  console.log(binned)
   return binned
 }
 
