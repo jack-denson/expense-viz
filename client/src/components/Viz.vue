@@ -12,13 +12,12 @@
           min-height="100"
           outlined
           min-width="100%"
-          id="vl"
+          :id="'vl'+$props.idNum"
         >
         </v-sheet>
-        <v-spacer v-if="left" />
       </v-col>
+      <v-spacer v-if="left" />
 
-      <v-spacer />
     </v-row>
   </v-container>
 
@@ -27,42 +26,25 @@
 <script>
 
 import embed from 'vega-embed';
+import preprocess from '../preprocess'
 export default {
   name: 'Viz',
   components: {
   },
-  props: ['left'],
+  props: ['left', 'spec', 'data', 'preprocessor', 'idNum'],
 
   methods: {
 
     async genViz() {
-      const spec = {
-        "data":
-          {"values":
-            [{"created_time":"2021-12-08T23:58:00.000Z",    "Category":"Groceries","Cost":18,"Name":"Extra chicken"},  {"created_time":"2021-12-08T03:03:00.000Z","Category":"Fun","Cost":11,"Name":"Movie Popcorn"},{"created_time":"2021-12-08T03:02:00.000Z","Category":"Misc","Cost":5.18,"Name":"Gatorade"},{"created_time":"2021-12-07T22:58:00.000Z","Category":"Eating Out","Cost":17.01,"Name":"Chipotle"},{"created_time":"2021-12-05T17:45:00.000Z","Category":"Groceries","Cost":32,"Name":"Sunday groceries"}]
-          },
-          "transform": [
-             {"calculate": "datum.Name", "as": "Item"}
-          ],
-          "width": "container",
-          "height": 110,
-          "mark": {"type": "bar",
-             "cornerRadius": 4,
-             "height": 50},
-          "encoding":{
-             "x":{"aggregate":"sum",
-             "field":"Cost",
-              "axis": null
-              },
-          "color":{"field":"Item"}
-          }
-        }
-      await embed('#vl', spec, {actions: false});
+      let spec = this.$props.spec
+      const preprocessor = preprocess[this.$props.preprocessor]
+      spec.data.values = preprocessor(this.$props.data)
+      await embed('#vl'+this.$props.idNum, spec, {actions: true});
     }
   },
 
-  beforeMount() {
-    this.genViz();
+  mounted() {
+    this.genViz()
   }
 
 }

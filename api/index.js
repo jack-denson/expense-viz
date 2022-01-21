@@ -1,6 +1,7 @@
 const express    = require('express');
 const {runQuery} = require('./notion-data')
-const cors = require('cors');
+const cors       = require('cors');
+const fs         = require('fs');
 
 const app = express();
 
@@ -16,7 +17,7 @@ app.get('/specs', cors_policy, (req, res) => {
   const specs = fs.readdirSync("viz-specs")
   let specList = []
   for(let spec of specs){
-      specList.append(JSON.parse(fs.readFileSync("viz-specs/" + spec + ".json", "UTF8")))
+      specList.push(JSON.parse(fs.readFileSync("viz-specs/" + spec, "UTF8")))
   }
 
   res.json(specList)

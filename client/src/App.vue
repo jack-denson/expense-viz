@@ -22,7 +22,13 @@
               rounded="lg"
             >
 
-              <viz :left="true" />
+              <viz v-for="spec, index of specs" 
+                   :key="JSON.stringify(spec)" 
+                   :left="index % 2 == 0"
+                   :data="expenses"
+                   :preprocessor="spec.preprocessor"
+                   :spec="spec.schema"
+                   :idNum="index" />
 
 
             </v-sheet>
@@ -45,8 +51,29 @@ export default {
   },
 
   data: () => ({
-    //
+    expenses: {},
+    specs: {}
   }),
+
+  methods: {
+    async getExpenses() {
+      const raw = await fetch("http://localhost:4000/data")
+      this.expenses = await raw.json()
+    },
+    async getSpecs() {
+      const raw = await fetch("http://localhost:4000/specs")
+      this.specs = await raw.json()
+    },
+    debug(x){
+      console.log(x)
+    }
+  },
+
+  async beforeMount() {
+    await this.getExpenses();
+    await this.getSpecs();
+  }
+
 };
 </script>
 <style>
