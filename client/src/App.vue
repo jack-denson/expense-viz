@@ -1,25 +1,56 @@
 <template>
-  <div id="app">
-    <h1> My Expenses </h1>
-  </div>
+  <v-app class="application">
+    <v-sheet
+      height="10vh">
+        <div class="text-h2" style="text-align:center">
+          Expenses
+        </div>
+
+    </v-sheet>
+
+    <v-main class="grey lighten-3">
+      <v-container>
+        <v-row>
+          <v-spacer />
+
+          <v-col
+            cols="12"
+            sm="10"
+          >
+            <v-sheet
+              min-height="70vh"
+              rounded="lg"
+            >
+
+              <viz :left="true" />
+
+
+            </v-sheet>
+          </v-col>
+
+          <v-spacer />
+        </v-row>
+      </v-container>
+    </v-main>
+  </v-app>
 </template>
 
 <script>
-
+import Viz from './components/Viz.vue'
 export default {
   name: 'App',
-  components: {
-  }
-}
-</script>
 
+  components: {
+    Viz
+  },
+
+  data: () => ({
+    //
+  }),
+};
+</script>
 <style>
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-  margin-top: 60px;
+.application {
+  font-family: Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif
 }
 </style>
