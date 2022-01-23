@@ -22,6 +22,21 @@
               rounded="lg"
             >
 
+              <v-container>
+                <v-row>
+                  <v-spacer />
+                  <v-col>
+                    <Total :projection="false" :spent="weekTotal" :week="lastSun"/>
+                  </v-col>
+                  <v-spacer />
+                  <v-col>
+                    <Total :projection="true" :spent="Math.round((weekTotal / weekPctg) * 100)/100" :week="lastSun"/>
+                  </v-col>
+                  <v-spacer />
+                </v-row>
+              
+              </v-container>
+
               <viz v-for="spec, index of specs" 
                    :key="JSON.stringify(spec)" 
                    :left="index % 2 == 0"
@@ -43,17 +58,22 @@
 
 <script>
 import Viz from './components/Viz.vue'
+import Total from './components/Total.vue'
+import preprocess from './preprocess'
+
 export default {
   name: 'App',
 
   components: {
-    Viz
+    Viz, Total
   },
 
-  data: () => ({
-    expenses: {},
-    specs: {}
-  }),
+  data: () => {
+    return {
+      expenses: {},
+      specs: {},
+    }
+  },
 
   methods: {
     async getExpenses() {
@@ -63,9 +83,20 @@ export default {
     async getSpecs() {
       const raw = await fetch("http://localhost:4000/specs")
       this.specs = await raw.json()
+    }
+  },
+
+  computed: {
+    weekPctg: () => {
+      return preprocess.howFarInWeek();
     },
-    debug(x){
-      console.log(x)
+
+    weekTotal: function() {
+      return preprocess.thisWeekTotal(this.expenses);
+    },
+
+    lastSun: () => {
+      return preprocess.getLastSunday().toLocaleDateString();
     }
   },
 

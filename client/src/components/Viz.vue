@@ -43,7 +43,6 @@ export default {
       const preprocessor = preprocess[this.$props.preprocessor]
       spec.data.values = preprocessor(this.$props.data)
       await embed('#vl'+this.$props.idNum, spec, {actions: false});
-      console.log(JSON.stringify(preprocess['weekTotals'](this.$props.data)))
     }
   },
 
