@@ -37,7 +37,7 @@ function render(data, specFile){
     view.toSVG(1)
     .then(function(svg) {
         fs.writeFileSync("output/" + specFile + ".svg", svg)
-    })
+    }) 
     .catch(function(err) { console.error(err); });
 }
 
