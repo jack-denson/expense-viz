@@ -1,16 +1,16 @@
-function getLastSunday() {
-    let lastSunday = new Date();
+function getLastSunday(day) {
+    let lastSunday = new Date(day) || new Date();
     lastSunday.setDate(lastSunday.getDate() - lastSunday.getDay() % 7);
     return lastSunday;
 }
 
-function howFarInWeek() {
-    const today = new Date()
+function howFarInWeek(day) {
+    const today = day || new Date()
     return (today.getDay() + (today.getHours()+(today.getMinutes()+ (today.getSeconds()/60))/60)/24) / 7
 }
 
 function duplLastWeek(totals) {
-    let thisWk = getLastSunday();
+    let thisWk = getLastSunday( new Date() );
     let lastWk = new Date(thisWk);
     lastWk.setDate(lastWk.getDate() - 7)
 
@@ -35,8 +35,8 @@ let weekTotals = data => {
     return totals
 }
 
-let thisWeekTotal = data => {
-    return (data[getLastSunday().toLocaleDateString()] || []).reduce((a, b) => a + b.Cost, 0)
+let thisWeekTotal = (data, day) => {
+    return (data[getLastSunday(day).toLocaleDateString()] || []).reduce((a, b) => a + b.Cost, 0)
 }
 
 module.exports = {
@@ -48,8 +48,8 @@ module.exports = {
         return flat
     },
 
-    thisWeek: data => {
-        let lastSunday = getLastSunday();
+    thisWeek: (data, day) => {
+        let lastSunday = getLastSunday(day);
     
         return data[lastSunday.toLocaleDateString()]
     },
@@ -62,7 +62,7 @@ module.exports = {
 
     getLastSunday,
 
-    weekTotalsWithThis: data => {
-        return duplLastWeek(weekTotals(data))
+    weekTotalsWithThis: (data, day) => {
+        return duplLastWeek(weekTotals(data), day)
     }
 }

@@ -1,0 +1,20 @@
+{
+    "preprocessor": "thisWeek",
+    "schema": {
+        "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+        "data": {},
+        "mark": "bar",
+        "encoding": {
+            "x": {
+                "field": "created_time",
+                "timeUnit": {"unit": "day", "step": 1},       
+                "axis": {
+                    "labelAlign": "left",
+                    "labelExpr": "datum.label[0]",
+                    "tickCount": 7
+                }
+            },
+            "y": {"field": "Cost", "aggregate": "sum"}
+        }
+        }
+}

@@ -34,14 +34,14 @@ export default {
   name: 'Viz',
   components: {
   },
-  props: ['left', 'spec', 'data', 'preprocessor', 'idNum'],
+  props: ['left', 'spec', 'data', 'preprocessor', 'idNum', 'day'],
 
   methods: {
 
     async genViz() {
       let spec = this.$props.spec
       const preprocessor = preprocess[this.$props.preprocessor]
-      spec.data.values = preprocessor(this.$props.data)
+      spec.data.values = preprocessor(this.$props.data, this.$props.day)
       await embed('#vl'+this.$props.idNum, spec, {actions: false});
     }
   },
