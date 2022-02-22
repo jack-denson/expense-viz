@@ -1,8 +1,10 @@
 const { MongoClient, ServerApiVersion } = require('mongodb');
-const dotenv       = require('dotenv');
 
 
-dotenv.config();
+if( process.env.NODE_ENV !== 'production') {
+  const dotenv = require('dotenv');
+  dotenv.config();
+}
 
 const password = process.env.MONGO_PW
 const username = process.env.MONGO_UN
