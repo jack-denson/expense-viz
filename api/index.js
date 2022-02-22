@@ -1,5 +1,4 @@
 const express      = require('express');
-const {runQuery}   = require('./notion-data')
 const cors         = require('cors');
 const fs           = require('fs');
 const dotenv       = require('dotenv');
@@ -8,7 +7,13 @@ const bodyParser   = require('body-parser')
 const connect      = require('./mongo-data');
 const cookieParser = require("cookie-parser");
 const { ObjectId } = require('mongodb')
-const bcrypt = require('bcrypt');
+const bcrypt       = require('bcrypt');
+const staticRender = require('./visualizeStatic');
+const preprocess   = require('./preprocess');
+
+
+// This file needs to be split up
+
 
 // get config vars
 dotenv.config();
@@ -42,6 +47,9 @@ function authenticateToken(req, res, next) {
   })
 }
 
+
+// These two should go in utils file
+
 function getWeek(date){
   let lastSunday = new Date(date);
   lastSunday.setDate(lastSunday.getDate() - lastSunday.getDay() % 7);
@@ -64,6 +72,9 @@ function binWeeks(flat) {
   return binned
 }
 
+
+
+// Log in with username, password, return access token
 app.post('/login', async (req, res) => {
 
   const { username, password } = req.body;
@@ -89,12 +100,16 @@ app.post('/login', async (req, res) => {
 
 });
 
+// Get the user associated with with token
 app.get('/user', authenticateToken, (req, res) => {
     res.json(req.user)
 });
 const cors_policy = cors({origin: 'http://localhost:8080' })
 
+// Get all visualization specs
 app.get('/specs', authenticateToken, cors_policy, (req, res) => {
+
+  // Having specs in filesystem and not database is dumb and slow, need to fix this
   const specs = fs.readdirSync("viz-specs")
   let specList = []
   for(let spec of specs){
@@ -104,15 +119,93 @@ app.get('/specs', authenticateToken, cors_policy, (req, res) => {
   res.json(specList)
 })
 
+
+// Get all data associated with user
 app.get('/data', authenticateToken, cors_policy , async (req, res) => {
   const { collection: expenses } = await connect( 'expenses' );
 
-  console.log(req.user.id)
   const data = await expenses.find({ user: new ObjectId(req.user.id)}).toArray();
   res.send(binWeeks(data))
+});
+
+
+// Delete individual expense
+app.delete('/delete-expense', authenticateToken, cors_policy , async (req, res) => {
+  const { collection: expenses } = await connect( 'expenses' );
+  try {
+
+    await expenses.deleteOne( {
+      _id: new ObjectId(req.body._id),
+      user: new ObjectId(req.user.id)
+    } );
+
+    return res.sendStatus(200);
+
+  } catch( err ) {
+    console.log( err );
+    return res.sendStatus(400);
+  }
+});
+
+// Add single expense
+app.post('/add-expense', authenticateToken, cors_policy, async (req, res) => {
+  const { collection: expenses } = await connect( 'expenses' );
+
+
+  try {
+    const newDoc = {
+      ...req.body,
+      Cost: Number(req.body.Cost),
+      created_time: new Date().toISOString(),
+      user: new ObjectId(req.user.id)
+    }
+    
+    const { insertedId } = await expenses.insertOne( newDoc );
+
+    
+
+    return res.json({ ...newDoc, _id: insertedId });
+  } catch( err ) {
+    console.log( err );
+    return res.sendStatus(400);
+  }
+
 })
 
 
+// Get single static viz
+app.get('/viz/:visualization', cors_policy, async (req, res) => {
+
+
+  let spec;
+  try {
+    spec = JSON.parse(fs.readFileSync("viz-specs/" + req.params.visualization + '.json', "UTF8"));
+  }
+  catch(err) {
+    return res.sendStatus(400);
+  }
+
+  const { collection: expenses } = await connect( 'expenses' );
+  const data = await expenses.find({ user: new ObjectId(req.user.id)}).toArray();
+
+  const binned = binWeeks(data)
+
+  const preprocessed = preprocess[spec.preprocessor](binned, new Date())
+
+  const svg = await staticRender(preprocessed, spec.schema);
+
+  res.setHeader('content-type', 'image/svg+xml');
+  res.send(svg);
+})
+
+
+
+
+
+
+
+
+// Run backend
 const port = process.env.PORT || 4000;
 app.listen(port, () => {
     console.log(`listening on ${port}`);

@@ -1,8 +1,5 @@
 <template>
     <div>
-      <div class="text-h2" style="text-align:center">
-          Expenses
-      </div>
       <v-container style="display: flex; justify-content:center">
             <v-sheet
               color="#f5f5f5"
