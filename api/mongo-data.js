@@ -1,11 +1,19 @@
-const { MongoClient, ServerApiVersion, ObjectId, ConnectionCheckedInEvent } = require('mongodb');
-const credentials = './certs/X509-cert-8723611595316076760.pem';
+const { MongoClient, ServerApiVersion } = require('mongodb');
+const dotenv       = require('dotenv');
 
-const client = new MongoClient('mongodb+srv://expenses.kassj.mongodb.net/myFirstDatabase?authSource=%24external&authMechanism=MONGODB-X509&retryWrites=true&w=majority', {
-  sslKey: credentials,
-  sslCert: credentials,
+
+dotenv.config();
+
+const password = process.env.MONGO_PW
+const username = process.env.MONGO_UN
+
+const uri = `mongodb+srv://expenses-app:${ password }@expenses.kassj.mongodb.net/myFirstDatabase?retryWrites=true&w=majority`;
+const client = new MongoClient(uri, {
+  useNewUrlParser: true,
+  useUnifiedTopology: true,
   serverApi: ServerApiVersion.v1
 });
+
 
 async function connect( coll ) {
   await client.connect();

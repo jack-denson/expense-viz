@@ -18,9 +18,6 @@ const preprocess   = require('./preprocess');
 // get config vars
 dotenv.config();
 
-// access config var
-process.env.TOKEN_SECRET;
-
 const app = express();
 
 app.use(bodyParser.json());
@@ -174,7 +171,7 @@ app.post('/add-expense', authenticateToken, cors_policy, async (req, res) => {
 
 
 // Get single static viz
-app.get('/viz/:visualization', cors_policy, async (req, res) => {
+app.get('/viz/:visualization', authenticateToken, cors_policy, async (req, res) => {
 
 
   let spec;
