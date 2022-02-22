@@ -56,7 +56,7 @@ module.exports = {
         let lastSunday = getLastSunday(day);
         //lastSunday.setDate(lastSunday.getDate() - 7)
     
-        return data[lastSunday.toLocaleDateString()]
+        return data[lastSunday.toLocaleDateString()] || []
     },
 
     weekTotals,

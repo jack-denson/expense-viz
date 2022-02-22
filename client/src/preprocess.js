@@ -51,7 +51,7 @@ module.exports = {
     thisWeek: (data, day) => {
         let lastSunday = getLastSunday(day);
     
-        return data[lastSunday.toLocaleDateString()]
+        return data[lastSunday.toLocaleDateString()] || []
     },
 
     weekTotals,
