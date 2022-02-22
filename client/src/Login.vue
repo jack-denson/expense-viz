@@ -67,7 +67,7 @@ export default {
   methods: {
     async login( e ) {
       e.preventDefault();
-      const res = await fetch('api/login', {
+      const res = await fetch('/login', {
         method: 'POST',
         credentials: 'same-origin',
         headers: {

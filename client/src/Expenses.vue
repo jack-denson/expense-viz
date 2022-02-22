@@ -155,11 +155,11 @@ export default {
 
   methods: {
     async getExpenses() {
-      const raw = await fetch("/api/data")
+      const raw = await fetch("/data")
       this.expenses = await raw.json()
     },
     async getSpecs() {
-      const raw = await fetch("/api/specs")
+      const raw = await fetch("/specs")
       this.specs = await raw.json()
     },
     setDay(dir) {
@@ -178,7 +178,7 @@ export default {
       return this.colors[cat]
     },
     async deleteExpense( expense ) {
-      const res = await fetch('api/delete-expense', {
+      const res = await fetch('/delete-expense', {
         method: 'DELETE',
         credentials: 'same-origin',
         headers: {

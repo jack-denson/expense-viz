@@ -33,7 +33,7 @@ export default {
 
   async beforeMount() {
     document.title="Expense Tracker"
-    const res = await fetch('api/user')
+    const res = await fetch('/user')
     this.loggedIn = res.status === 200
   }
 

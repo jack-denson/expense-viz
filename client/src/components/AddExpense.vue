@@ -101,7 +101,7 @@ export default {
     async addExpense() {
       if( this.editedItem.Category && this.editedItem.Name ) {
 
-       const res = await fetch('api/add-expense', {
+       const res = await fetch('/add-expense', {
           method: 'POST',
           credentials: 'same-origin',
           headers: {
