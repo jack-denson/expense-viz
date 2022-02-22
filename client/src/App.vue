@@ -16,6 +16,7 @@
 import Expenses from './Expenses.vue'
 import Login from './Login.vue'
 
+
 export default {
   name: 'App',
 
@@ -29,7 +30,9 @@ export default {
     }
   },
 
+
   async beforeMount() {
+    document.title="Expense Tracker"
     const res = await fetch('api/user')
     this.loggedIn = res.status === 200
   }
