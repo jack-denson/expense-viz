@@ -106,12 +106,9 @@ const cors_policy = cors({origin: 'http://localhost:8080' })
 // Get all visualization specs
 app.get('/specs', authenticateToken, cors_policy, (req, res) => {
 
-  // Having specs in filesystem and not database is dumb and slow, need to fix this
-  const specs = fs.readdirSync("viz-specs")
-  let specList = []
-  for(let spec of specs){
-      specList.push(JSON.parse(fs.readFileSync("viz-specs/" + spec, "UTF8")))
-  }
+  const { collection: visualizations } = await connect( 'visualizations' );
+
+  const specList = await visualizations.find({}).toArray();
 
   res.json(specList)
 })
@@ -174,11 +171,10 @@ app.post('/add-expense', authenticateToken, cors_policy, async (req, res) => {
 app.get('/viz/:visualization', authenticateToken, cors_policy, async (req, res) => {
 
 
-  let spec;
-  try {
-    spec = JSON.parse(fs.readFileSync("viz-specs/" + req.params.visualization + '.json', "UTF8"));
-  }
-  catch(err) {
+  const { collection: visualizations } = await connect( 'visualizations' );
+
+  const viz = await visualizations.findOne({ name: req.params.visualization});
+  if( !viz ) {
     return res.sendStatus(400);
   }
 
@@ -187,9 +183,9 @@ app.get('/viz/:visualization', authenticateToken, cors_policy, async (req, res) 
 
   const binned = binWeeks(data)
 
-  const preprocessed = preprocess[spec.preprocessor](binned, new Date())
+  const preprocessed = preprocess[viz.preprocessor](binned, new Date())
 
-  const svg = await staticRender(preprocessed, spec.schema);
+  const svg = await staticRender(preprocessed, viz.schema);
 
   res.setHeader('content-type', 'image/svg+xml');
   res.send(svg);
