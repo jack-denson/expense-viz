@@ -1,8 +1,7 @@
-vega = require('vega');
-vl = require('vega-lite')
-fs = require('fs');
+const vega = require('vega');
+const vl = require('vega-lite')
 
-async function render(data, vlSpec){
+async function render(data, vlSpec, format){
     vlSpec["data"] = {"values": data}
     
     const spec = vl.compile(vlSpec).spec
@@ -17,9 +16,18 @@ async function render(data, vlSpec){
     view.hover();
     view.finalize();
     // generate a static SVG image
-    const svg = await view.toSVG(1);
 
-    return svg;
+    if( format === 'png' ) {
+        const cvs = await view.toCanvas(1.5);
+
+        return cvs;
+    }
+    else {
+        const svg = await view.toSVG(1);
+
+        return svg;
+    }
+
 }
 
 module.exports = render

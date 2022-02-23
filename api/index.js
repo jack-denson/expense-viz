@@ -1,6 +1,5 @@
 const express      = require('express');
 const cors         = require('cors');
-const fs           = require('fs');
 const dotenv       = require('dotenv');
 const jwt          = require('jsonwebtoken')
 const bodyParser   = require('body-parser')
@@ -185,10 +184,20 @@ app.get('/viz/:visualization', authenticateToken, cors_policy, async (req, res) 
 
   const preprocessed = preprocess[viz.preprocessor](binned, new Date())
 
-  const svg = await staticRender(preprocessed, viz.schema);
+  if( req.query && req.query.format === 'png') {
 
-  res.setHeader('content-type', 'image/svg+xml');
-  res.send(svg);
+    res.setHeader('Content-Type', 'image/png');
+    const stream = await staticRender(preprocessed, viz.schema, 'png');
+    console.log(stream)
+    stream.pngStream().pipe(res);
+  }
+  else {
+    const svg = await staticRender(preprocessed, viz.schema);
+
+    res.setHeader('content-type', 'image/svg+xml');
+    res.send(svg);
+  }
+
 })
 
 
