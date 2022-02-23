@@ -252,7 +252,7 @@ export default {
     },
 
     tableData: function() {
-      return this.expenses[ this.lastSun ].map( exp => {
+      return (this.expenses[ this.lastSun ] || []).map( exp => {
         return {
           ...exp,
           Cost: '$' + exp.Cost.toFixed(2),
