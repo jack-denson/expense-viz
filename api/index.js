@@ -104,13 +104,13 @@ app.get('/user', authenticateToken, (req, res) => {
 const cors_policy = cors({origin: 'http://localhost:8080' })
 
 // Get all visualization specs
-app.get('/specs', authenticateToken, cors_policy, (req, res) => {
+app.get('/specs', authenticateToken, cors_policy, async (req, res) => {
 
   const { collection: visualizations } = await connect( 'visualizations' );
 
   const specList = await visualizations.find({}).toArray();
 
-  res.json(specList)
+  return res.json(specList)
 })
 
 
