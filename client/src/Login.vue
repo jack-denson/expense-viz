@@ -7,10 +7,13 @@
               outlined
               rounded
               elevation="1"
+              class="full-on-mobile"
               width="60vw">
               <h1 style="text-align: center; margin-top: 10vh">Login</h1>
               <div style="display: flex; justify-content: center; margin-top: 5vh">
-                <div style="width: 30vw">
+                <div 
+                  style="width: 30vw"
+                  class="full-on-mobile">
                    <v-banner
                     color="#eecccc"
                     elevation="2"
@@ -88,5 +91,11 @@ export default {
 <style>
 .application {
   font-family: Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif
+}
+
+@media only screen and (max-width: 600px) {
+  .full-on-mobile {
+    min-width: 100%
+  }
 }
 </style>

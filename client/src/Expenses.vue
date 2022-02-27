@@ -30,7 +30,7 @@
                     <v-col 
                       v-if="!mostRecent"
                       cols=1 
-                      style="padding-left: 0px">
+                      style="padding-left: 0px; margin-right:30px">
                       <v-btn
                         small
                         outlined
@@ -40,28 +40,27 @@
                     </v-col>
                   </v-row>
                   <v-row>
-                  <v-spacer />
-                  <v-col>
+                  <v-col
+                    :cols="!mostRecent && mobile ? 12 : undefined">
                       <Total 
                       :projection="false" 
-                      :spent="Math.round(weekTotal * 100)/100" 
+                      :spent="weekTotal.toFixed(2)" 
                       :week="lastSun"/>
                   </v-col>
-                  <v-spacer />
                   <v-col>
                       <Total 
                       v-if="mostRecent"
                       :projection="true" 
-                      :spent="Math.round((weekTotal / weekPctg) * 100)/100" 
+                      :spent="(weekTotal / weekPctg).toFixed(2)" 
                       :week="lastSun"/>
                   </v-col>
-                  <v-spacer />
                 </v-row>
                 <v-row>
                   <v-btn outlined style="margin-left: 30px" @click="table=!table">
                     <v-icon>{{ !table ? 'mdi-table-large' : 'mdi-chart-areaspline' }} </v-icon>
                   </v-btn>
-                 <v-btn outlined style="margin-left: 30px" @click="adding=true">
+                  <v-spacer v-if="mobile" />
+                  <v-btn outlined :style="mobile ? 'margin-right: 30px' : 'margin-left: 30px'" @click="adding=true">
                     <v-icon> mdi-plus </v-icon>
                   </v-btn>
                 </v-row>
@@ -149,7 +148,8 @@ export default {
         { text: 'Delete', value: 'actions', sortable: false }
       ],
       colors: {},
-      adding: false
+      adding: false,
+      mobile: window.innerWidth < 400
     }
   },
 
